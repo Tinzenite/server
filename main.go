@@ -33,7 +33,7 @@ func main() {
 	}
 	// print important info
 	address, _ := enc.Address()
-	fmt.Printf("Running peer <%s>.\nID: %s\n", enc.Name(), address)
+	fmt.Printf("Running server <%s>.\nID: %s\n", enc.Name(), address)
 	// prepare quitting via ctrl-c
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
@@ -41,6 +41,7 @@ func main() {
 	for {
 		select {
 		case <-c:
+			enc.Close()
 			log.Println("Server: quitting.")
 			return
 		} // select
