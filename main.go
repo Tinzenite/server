@@ -19,8 +19,10 @@ func main() {
 	// define required flags
 	var path string
 	var commandString string
+	var useHadoop bool
 	flag.StringVar(&path, "path", "", "File directory path in which to run the server.")
 	flag.StringVar(&commandString, "cmd", "load", "Command for the path: create or load. Default is load.")
+	flag.BoolVar(&useHadoop, "hadoop", false, "Flag to enable Hadoop storage.")
 	// parse flags
 	flag.Parse()
 
@@ -59,7 +61,7 @@ func main() {
 	}
 
 	// prepare storage
-	store := createStorage()
+	store := createStorage(useHadoop)
 
 	var enc *encrypted.Encrypted
 	var err error
