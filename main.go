@@ -61,7 +61,13 @@ func main() {
 	}
 
 	// prepare storage
-	store := createStorage(useHadoop)
+	var store encrypted.Storage
+	if useHadoop {
+		log.Println("Hadoop storage is not yet supported!")
+		return
+	}
+	// disk storage writes data to disk
+	store = createDiskStorage(path)
 
 	var enc *encrypted.Encrypted
 	var err error
