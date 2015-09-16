@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/colinmarc/hdfs" // NOTE: requires the write support branch!
+	"github.com/colinmarc/hdfs" // NOTE: requires the write support branch for now!
 )
 
 /*
@@ -36,6 +36,9 @@ func (h *hdfsStorage) Store(key string, data []byte) error {
 		// probably that is already existed... :(
 		log.Println("DEBUG: probably that file already exists:", err)
 	}
+	// defer close for all cases
+	defer fw.Close()
+	// actually write data
 	_, err = fw.Write(data)
 	return err
 }
