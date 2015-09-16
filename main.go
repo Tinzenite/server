@@ -58,18 +58,21 @@ func main() {
 		shared.MakeDirectory(path)
 	}
 
+	// prepare storage
+	store := createStorage()
+
 	var enc *encrypted.Encrypted
 	var err error
 	switch command {
 	case shared.CmdLoad:
-		enc, err = encrypted.Load(path)
+		enc, err = encrypted.Load(path, store)
 		if err != nil {
 			log.Println(tag, "failed to load encrypted:", err)
 			return
 		}
 	case shared.CmdCreate:
 		peerName := shared.GetString("Please enter a peer name for this instance:")
-		enc, err = encrypted.Create(path, peerName)
+		enc, err = encrypted.Create(path, peerName, store)
 		if err != nil {
 			log.Println(tag, "failed to create encrypted:", err)
 			return
