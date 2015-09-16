@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/colinmarc/hdfs"
-	"github.com/tinzenite/shared"
+	"log"
+
+	"github.com/colinmarc/hdfs" // NOTE: requires the write support branch!
 )
 
 /*
@@ -29,7 +30,14 @@ func createHDFSStorage(url string) (*hdfsStorage, error) {
 }
 
 func (h *hdfsStorage) Store(key string, data []byte) error {
-	return shared.ErrUnsupported
+	fw, err := h.client.Create(key)
+	if err != nil {
+		// TODO test and FIXME
+		// probably that is already existed... :(
+		log.Println("DEBUG: probably that file already exists:", err)
+	}
+	_, err = fw.Write(data)
+	return err
 }
 
 func (h *hdfsStorage) Retrieve(key string) ([]byte, error) {
