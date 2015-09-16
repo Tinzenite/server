@@ -7,7 +7,8 @@ import (
 )
 
 /*
-TODO abstract storage away so that we can write to hadoop AND disk.
+diskStorage is a storage implementation that simply writes and reads data from
+the given directory.
 Implements encrypted/Storage interface.
 */
 type diskStorage struct {
