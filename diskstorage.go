@@ -2,6 +2,7 @@ package main
 
 import (
 	"io/ioutil"
+	"os"
 
 	"github.com/tinzenite/shared"
 )
@@ -28,4 +29,8 @@ func (s *diskStorage) Store(key string, data []byte) error {
 
 func (s *diskStorage) Retrieve(key string) ([]byte, error) {
 	return ioutil.ReadFile(s.RootPath + "/" + key)
+}
+
+func (s *diskStorage) Remove(key string) error {
+	return os.Remove(s.RootPath + "/" + key)
 }

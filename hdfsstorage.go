@@ -46,3 +46,7 @@ func (h *hdfsStorage) Store(key string, data []byte) error {
 func (h *hdfsStorage) Retrieve(key string) ([]byte, error) {
 	return h.client.ReadFile(key)
 }
+
+func (h *hdfsStorage) Remove(key string) error {
+	return h.client.Remove(key)
+}
