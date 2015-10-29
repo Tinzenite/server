@@ -19,9 +19,9 @@ type hdfsStorage struct {
 /*
 createHDFSStorage creates a structure that writes all files to a Hadoop file system.
 */
-func createHDFSStorage(url string) (*hdfsStorage, error) {
+func createHDFSStorage(address, user string) (*hdfsStorage, error) {
 	// connect to URL
-	client, err := hdfs.New(url) // FIXME: use NewForUser()
+	client, err := hdfs.NewForUser(address, user)
 	if err != nil {
 		return nil, err
 	}

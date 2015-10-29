@@ -20,9 +20,13 @@ func main() {
 	var path string
 	var commandString string
 	var useHadoop bool
+	var address string
+	var user string
 	flag.StringVar(&path, "path", "", "File directory path in which to run the server.")
 	flag.StringVar(&commandString, "cmd", "load", "Command for the path: create or load. Default is load.")
 	flag.BoolVar(&useHadoop, "hadoop", false, "Flag to enable Hadoop storage.")
+	flag.StringVar(&address, "address", "127.0.0.1", "Address of HDFS to connect to.")
+	flag.StringVar(&user, "user", "root", "User of HDFS to connect as.")
 	// parse flags
 	flag.Parse()
 
@@ -63,11 +67,16 @@ func main() {
 	// prepare storage
 	var store encrypted.Storage
 	if useHadoop {
-		log.Println("Hadoop storage is not yet supported!")
-		return
+		var err error
+		store, err = createHDFSStorage(address, user)
+		if err != nil {
+			log.Println("Failed to connect to HDFS:", err)
+			return
+		}
+	} else {
+		// disk storage writes data to disk
+		store = createDiskStorage(path)
 	}
-	// disk storage writes data to disk
-	store = createDiskStorage(path)
 
 	var enc *encrypted.Encrypted
 	var err error
@@ -97,8 +106,8 @@ func main() {
 
 	// run encrypted
 	// print important info
-	address, _ := enc.Address()
-	fmt.Printf("%s Running server <%s>.\nID: %s\n", tag, enc.Name(), address)
+	toxAddress, _ := enc.Address()
+	fmt.Printf("%s Running server <%s>.\nID: %s\n", tag, enc.Name(), toxAddress)
 	// prepare quitting via ctrl-c
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
