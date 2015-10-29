@@ -30,15 +30,23 @@ func createHDFSStorage(address, user string) (*hdfsStorage, error) {
 }
 
 func (h *hdfsStorage) Store(key string, data []byte) error {
+	// if it already exists first delete the old version
+	_, err := h.client.Stat(key)
+	if err != nil {
+		err := h.client.Remove(key)
+		if err != nil {
+			log.Println("Failed to remove previous version!", err)
+			return err
+		}
+	}
+	// try writing file
 	fw, err := h.client.Create(key)
 	if err != nil {
-		// TODO test and FIXME
-		// probably that is already existed... :(
-		log.Println("DEBUG: probably that file already exists:", err)
+		return err
 	}
 	// defer close for all cases
 	defer fw.Close()
-	// actually write data
+	// actually write data to file
 	_, err = fw.Write(data)
 	return err
 }
